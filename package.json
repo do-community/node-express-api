@@ -1,0 +1,18 @@
+{
+  "name": "fastify-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.14.2",
+    "mongoose": "^5.12.3",
+    "nodemon": "^2.0.7"
+  }
+}
