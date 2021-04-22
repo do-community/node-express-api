@@ -1,0 +1,12 @@
+spec:
+  name: node-fastify-api
+  services:
+    - name: fastify
+      run_command: npm start
+      git:
+        branch: master
+        repo_clone_url: https://github.com/do-community/node-fastify-api.git
+      envs:
+        - key: DATABASE_URL
+          scope: RUN_AND_BUILD_TIME
+          value: ${db.DATABASE_URL}
