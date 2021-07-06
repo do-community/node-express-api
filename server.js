@@ -5,6 +5,8 @@ const express = require("express");
 const app = express();
 const connectToDatabase = require("./connectToDatabase");
 
+const port = process.env.PORT || 3000;
+
 /**
  * routes
  * ===========================
@@ -61,6 +63,6 @@ app.delete("/tweets/:tweetId", async (req, res) => {
 });
 
 // express listen on 3000 and log a message
-app.listen(3000, () => {
-  console.log("server started on port 3000");
+app.listen(port, () => {
+  console.log(`server started on port ${port}`);
 });
