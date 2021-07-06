@@ -1,73 +1,63 @@
-// Require the framework and instantiate it
-const fastify = require("fastify")({ logger: true });
-const mongoose = require("mongoose");
+require("dotenv").config();
 
-// setup
-mongoose.connect("mongodb://localhost:27017/tweeter", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+// get all the packages we need
+const express = require("express");
+const app = express();
+const connectToDatabase = require("./connectToDatabase");
+
+/**
+ * routes
+ * ===========================
+ * ===========================
+ **/
+
+/**
+ * Home Page
+ */
+app.get("/", async (req, res) => {
+  res.json({ message: "welcome to the new twitter!" });
 });
 
-const Tweet = mongoose.model("Tweet", { text: String });
-
-// add some middleware
-// cors
-
-// declare routes
-fastify.get("/", async (req, res) => {
-  return { message: "welcome to the new twitter!" };
-});
-
-// get all tweets
-fastify.get("/tweets", async (request, reply) => {
-  const tweets = await Tweet.find({});
-  return { tweets };
+/**
+ * Get all tweets
+ */
+app.get("/tweets", async (req, res) => {
+  const { db } = await connectToDatabase();
+  const tweets = await db.collection("tweets").find({}).toArray();
+  res.json({ tweets });
 });
 
 // get a single tweet
-fastify.get("/tweets/:tweetId", async (req, res) => {
-  const tweet = await Tweet.findById(req.params.tweetId);
-
-  console.log(tweet);
-  return { tweet };
+app.get("/tweets/:tweetId", async (req, res) => {
+  const { db } = await connectToDatabase();
+  const tweet = await db
+    .collection("tweets")
+    .findOne({ _id: req.params.tweetId });
+  res.json({ tweet });
 });
 
 // create a tweet
-fastify.post("/tweets", async (req, res) => {
-  const tweet = new Tweet({ text: req.body.text });
-  await tweet.save();
-  return { tweet };
+app.post("/tweets", async (req, res) => {
+  const { db } = await connectToDatabase();
+  const tweet = await db.collection("tweets").insertOne(req.body.text);
+  res.json({ tweet });
 });
 
 // update a tweet
-fastify.put("/tweets/:tweetId", async (req, res) => {
-  const tweet = await Tweet.findByIdAndUpdate(
-    req.params.tweetId,
-    {
-      text: req.body.text,
-    },
-    {
-      new: true,
-    }
-  );
+app.put("/tweets/:tweetId", async (req, res) => {
+  const { db } = await connectToDatabase();
+  const tweet = await db
+    .collection("tweets")
+    .updateOne({ _id: req.params.tweetId }, { $set: { text: req.body.text } });
 
-  return { tweet };
+  res.json({ tweet });
 });
 
 // delete a tweet
-fastify.delete("/tweets/:tweetId", async (req, res) => {
-  await Tweet.findByIdAndRemove(req.params.tweetId);
+app.delete("/tweets/:tweetId", async (req, res) => {
+  const { db } = await connectToDatabase();
+  await db.collection("tweets").deleteOne({ _id: req.params.tweetId });
   res.code(204);
 });
 
-// Run the server!
-const start = async () => {
-  try {
-    await fastify.listen(3000);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
-
-start();
+app.listen(3000);
