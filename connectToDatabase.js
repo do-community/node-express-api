@@ -3,7 +3,7 @@ const MongoClient = require("mongodb").MongoClient;
 
 // connect to the db
 const url = process.env.DATABASE_URL;
-const cert = process.env.CA_CERT || "./ca-certificate.crt";
+const cert = process.env.CA_CERT;
 const dbName = "tweets";
 
 if (!url) throw new Error("Please enter a DATABASE_URL");
@@ -30,7 +30,7 @@ module.exports = async function connectToDatabase() {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     tls: true,
-    tlsCAFile: cert,
+    tlsCAFile: "./ca-certificate.crt",
   });
 
   const db = client.db(dbName);
