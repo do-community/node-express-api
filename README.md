@@ -21,7 +21,7 @@ The routes for this app are:
 
 ## Deploying to DigitalOcean
 
-[![Deploy to DO](https://mp-assets1.sfo2.digitaloceanspaces.com/deploy-to-do/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/do-community/node-fastify-api/tree/master)
+[![Deploy to DO](https://mp-assets1.sfo2.digitaloceanspaces.com/deploy-to-do/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/do-community/node-express-api/tree/master)
 
 ## How to Deploy
 
