@@ -60,4 +60,7 @@ app.delete("/tweets/:tweetId", async (req, res) => {
   res.code(204);
 });
 
-app.listen(3000);
+// express listen on 3000 and log a message to the console
+app.listen(3000, () => {
+  console.log("server started on port 3000");
+});
