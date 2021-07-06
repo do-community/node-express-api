@@ -9,10 +9,6 @@ const dbName = "tweets";
 if (!url) throw new Error("Please enter a DATABASE_URL");
 if (!cert) throw new Error("Please enter a CA_CERT");
 
-// write the cert to a temporary file
-// we need app platform to be able to read the file
-// we will pull the cert from environment variables and write it to a temporary file
-
 // connect to the db
 let cachedClient = null;
 let cachedDb = null;
@@ -24,6 +20,9 @@ module.exports = async function connectToDatabase() {
     return { client: cachedClient, db: cachedDb };
   }
 
+  // write the cert to a temporary file
+  // we need app platform to be able to read the file
+  // we will pull the cert from environment variables and write it to a temporary file
   fs.writeFileSync("./ca-certificate.crt", cert);
 
   const client = await MongoClient.connect(url, {
