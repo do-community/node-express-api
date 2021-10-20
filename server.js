@@ -2,10 +2,16 @@ require("dotenv").config();
 
 // get all the packages we need
 const express = require("express");
-const app = express();
 const connectToDatabase = require("./connectToDatabase");
+const ObjectId = require("mongodb").ObjectId;
 
+// set our port
 const port = process.env.PORT || 3000;
+
+// create and configure our express app
+const app = express();
+app.use(express.json()); // tell express to parse json data
+
 
 /**
  * routes
@@ -34,7 +40,7 @@ app.get("/tweets/:tweetId", async (req, res) => {
   const { db } = await connectToDatabase();
   const tweet = await db
     .collection("tweets")
-    .findOne({ _id: req.params.tweetId });
+    .findOne({ _id: new ObjectId(req.params.tweetId) });
   res.json({ tweet });
 });
 
@@ -50,7 +56,10 @@ app.put("/tweets/:tweetId", async (req, res) => {
   const { db } = await connectToDatabase();
   const tweet = await db
     .collection("tweets")
-    .updateOne({ _id: req.params.tweetId }, { $set: { text: req.body.text } });
+    .updateOne(
+      { _id: new ObjectId(req.params.tweetId) },
+      { $set: { text: req.body.text } }
+    );
 
   res.json({ tweet });
 });
@@ -58,8 +67,11 @@ app.put("/tweets/:tweetId", async (req, res) => {
 // delete a tweet
 app.delete("/tweets/:tweetId", async (req, res) => {
   const { db } = await connectToDatabase();
-  await db.collection("tweets").deleteOne({ _id: req.params.tweetId });
-  res.code(204);
+  await db
+    .collection("tweets")
+    .deleteOne({ _id: new ObjectId(req.params.tweetId) });
+  
+  res.code(204); // response code for resource deleted successfully
 });
 
 // express listen on 3000 and log a message
