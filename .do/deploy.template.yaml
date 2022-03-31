@@ -2,7 +2,7 @@ spec:
   name: node-express-api
   databases:
     - name: db
-      engine: mongodb
+      engine: mongo
   services:
     - name: express
       run_command: npm start
