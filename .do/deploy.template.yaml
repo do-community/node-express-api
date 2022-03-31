@@ -1,5 +1,7 @@
 spec:
   name: node-express-api
+  databases:
+    - name: db
   services:
     - name: express
       run_command: npm start
