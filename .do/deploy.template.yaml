@@ -1,8 +1,11 @@
 spec:
   name: node-express-api
   databases:
-    - name: db
-      engine: mongo
+    - cluster_name: db
+      engine: MONGODB
+      name: db
+      production: true
+      version: "4"
   services:
     - name: express
       run_command: npm start
