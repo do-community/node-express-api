@@ -12,7 +12,6 @@ const port = process.env.PORT || 3000;
 const app = express();
 app.use(express.json()); // tell express to parse json data
 
-
 /**
  * routes
  * ===========================
@@ -47,19 +46,21 @@ app.get("/tweets/:tweetId", async (req, res) => {
 // create a tweet
 app.post("/tweets", async (req, res) => {
   const { db } = await connectToDatabase();
-  const tweet = await db.collection("tweets").insertOne(req.body.text);
-  res.json({ tweet });
+  const result = await db
+    .collection("tweets")
+    .insertOne({ text: req.body.text });
+
+  res.json({ tweetId: result.insertedId });
 });
 
 // update a tweet
 app.put("/tweets/:tweetId", async (req, res) => {
   const { db } = await connectToDatabase();
-  const tweet = await db
-    .collection("tweets")
-    .updateOne(
-      { _id: new ObjectId(req.params.tweetId) },
-      { $set: { text: req.body.text } }
-    );
+  const tweet = await db.collection("tweets").findOneAndUpdate(
+    { _id: new ObjectId(req.params.tweetId) },
+    { $set: { text: req.body.text } },
+    { returnOriginal: false } // return the updated document
+  );
 
   res.json({ tweet });
 });
@@ -70,7 +71,7 @@ app.delete("/tweets/:tweetId", async (req, res) => {
   await db
     .collection("tweets")
     .deleteOne({ _id: new ObjectId(req.params.tweetId) });
-  
+
   res.code(204); // response code for resource deleted successfully
 });
 
